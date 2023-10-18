@@ -1,1 +1,5 @@
 venv
+.DS_Store
+web_drivers
+**/__init__.py
+__pycache__/
