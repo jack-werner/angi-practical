@@ -1,3 +1,4 @@
+import random
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -10,10 +11,10 @@ class ContractorsSpider(scrapy.Spider):
 
     def get_data(self ):
         """
-        Company name
-        Phone number
+        Company name X
+        Phone number X
         Address with street, city, state, and zip code
-        Company Website (if available)
+        Company Website (if available) 
         Email Address (if available)
         BBB Rating
         Accredited Date (if available)
@@ -32,24 +33,22 @@ class ContractorsSpider(scrapy.Spider):
 
     
     def parse(self, response: Response) -> Any:
-        # x_path = '//*[@id="content"]/div/div[3]/div/div[1]/div[2]/div[4]'
         results_x_path = '//*[@id="content"]/div/div[3]/div/div[1]/div[2]/div/*'
-                        #  '//*[@id="content"]/div/div[3]/div/div[1]/div[2]/div[4]/div/div[2]/div/div[2]/p[1]/a'
         search_results = response.xpath(results_x_path)
 
         self.log(f"NUMBER OF ITEMS: {len(search_results)}")
+
+
+        name_xpath = ".//div/h3/a/span/text()"
+        rating_xpath = ".//div/div/span/text()[3]"
+        phone_xpath = './/a[contains(@href, "tel:")]/text()'
         
         for item in search_results:
-            name_xpath = ".//div/h3/a/span/text()"
-            # //*[@id="content"]/div/div[3]/div/div[1]/div[2]/div[4]/div/div[2]/div/div[2]/p[1]/a
-            phone_xpath = './/a[contains(@href, "tel:")]/text()'
+            
             yield {
                 "company_name": item.xpath(name_xpath).get(),
                 "phone_number": item.xpath(phone_xpath).get(),
+                "bbb_rating": item.xpath(rating_xpath).get(),
             }
-        # print(f"XPath Item:{item}")
-        # self.log(f"XPath Item:{item}")
-        # filename = "contractor.html"
-        # Path(filename).write_bytes(response.body)
     
     
