@@ -1,5 +1,3 @@
-import random
-from pathlib import Path
 from typing import Any, Iterable
 
 import scrapy
@@ -16,20 +14,20 @@ class ContractorsSpider(scrapy.Spider):
         (Any other information you think is good to have/relevant)
         """
         name_xpath = ".//div/h3/a/span/text()"
+        phone_xpath = './/a[contains(@href, "tel:")]/text()'
         street_address_xpath = './/div[2]/div/div/p[2]/text()'
         city_state_xpath = './/div[2]/div/div/p[2]/text()[2]'
         zip_code_xpath = './/div[2]/div/div/p[2]/span[2]/text()'
         rating_xpath = ".//div/div/span/text()[3]"
-        phone_xpath = './/a[contains(@href, "tel:")]/text()'
         profile_url_xpath = ".//div/h3/a/@href"
 
 
         contractor = BbbContractorsItem()
         contractor["company_name"] = item.xpath(name_xpath).get()
+        contractor["phone_number"] = item.xpath(phone_xpath).get(),
         contractor["street_address"] = item.xpath(street_address_xpath).get()
         contractor["city_state"] = item.xpath(city_state_xpath).get()
         contractor["zip_code"] = item.xpath(zip_code_xpath).get()
-        contractor["phone_number"] = item.xpath(phone_xpath).get(),
         contractor["bbb_rating"] = item.xpath(rating_xpath).get(),
         contractor["profile_page_url"] = item.xpath(profile_url_xpath).get()
 
@@ -45,6 +43,18 @@ class ContractorsSpider(scrapy.Spider):
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
+    def parse_contractor_profile(self, response: Response):
+        item = response.meta['item']
+
+        website_xpath = '//*[@id="content"]/div[2]/div[2]/div[1]/div/div[2]/a/@href'
+        accredited_date_xpath = '//*[@id="content"]/div[2]/div[2]/div[2]/div[2]/div/div[1]/div[2]/p[1]/text()'
+
+        item['company_website_url'] = response.xpath(website_xpath).get()
+        item['accredited_date'] = response.xpath(accredited_date_xpath).get()
+
+        yield item
+
+
     
     def parse(self, response: Response) -> Any:
         results_x_path = '//*[@id="content"]/div/div[3]/div/div[1]/div[2]/div/*'
@@ -54,7 +64,10 @@ class ContractorsSpider(scrapy.Spider):
         
         for item in search_results:
             contractor = self.get_contractor(item)
-            yield contractor
+            if contractor['profile_page_url']:
+                request = scrapy.Request(contractor['profile_page_url'], callback=self.parse_contractor_profile)
+                request.meta['item'] = contractor
+                yield request
     
     
     
