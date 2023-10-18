@@ -16,9 +16,9 @@ class ContractorsSpider(scrapy.Spider):
         Address with street, city, state, and zip code
         Company Website (if available) 
         Email Address (if available)
-        BBB Rating
+        BBB Rating X
         Accredited Date (if available)
-        Profile page URL
+        Profile page URL 
         (Any other information you think is good to have/relevant)
         """
 
@@ -42,6 +42,7 @@ class ContractorsSpider(scrapy.Spider):
         name_xpath = ".//div/h3/a/span/text()"
         rating_xpath = ".//div/div/span/text()[3]"
         phone_xpath = './/a[contains(@href, "tel:")]/text()'
+        profile_url_xpath = ".//div/h3/a/@href"
         
         for item in search_results:
             
@@ -49,6 +50,7 @@ class ContractorsSpider(scrapy.Spider):
                 "company_name": item.xpath(name_xpath).get(),
                 "phone_number": item.xpath(phone_xpath).get(),
                 "bbb_rating": item.xpath(rating_xpath).get(),
+                "profile_page_url": item.xpath(profile_url_xpath).get()
             }
     
     
