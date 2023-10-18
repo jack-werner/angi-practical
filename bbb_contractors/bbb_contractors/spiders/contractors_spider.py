@@ -8,8 +8,15 @@ from scrapy.http import Request, Response
 class ContractorItem(scrapy.Item):
     company_name = scrapy.Field()
     phone_number = scrapy.Field()
+    street_address = scrapy.Field()
+    city_state = scrapy.Field()
+    zip_code = scrapy.Field()
+    company_website_url = scrapy.Field()
+    email_address = scrapy.Field()
     bbb_rating = scrapy.Field()
+    accredited_date = scrapy.Field()
     profile_page_url = scrapy.Field()
+
 
 class ContractorsSpider(scrapy.Spider):
 
@@ -17,23 +24,22 @@ class ContractorsSpider(scrapy.Spider):
 
     def get_contractor(self, item):
         """
-        Company name X
-        Phone number X
-        Address with street, city, state, and zip code
-        Company Website (if available) - this might have to be found by going to profile page
-        Email Address (if available)
-        BBB Rating X
-        Accredited Date (if available)
-        Profile page URL X
         (Any other information you think is good to have/relevant)
         """
         name_xpath = ".//div/h3/a/span/text()"
+        street_address_xpath = './/div[2]/div/div/p[2]/text()'
+        city_state_xpath = './/div[2]/div/div/p[2]/text()[2]'
+        zip_code_xpath = './/div[2]/div/div/p[2]/span[2]/text()'
         rating_xpath = ".//div/div/span/text()[3]"
         phone_xpath = './/a[contains(@href, "tel:")]/text()'
         profile_url_xpath = ".//div/h3/a/@href"
 
+
         contractor = ContractorItem()
         contractor["company_name"] = item.xpath(name_xpath).get()
+        contractor["street_address"] = item.xpath(street_address_xpath).get()
+        contractor["city_state"] = item.xpath(city_state_xpath).get()
+        contractor["zip_code"] = item.xpath(zip_code_xpath).get()
         contractor["phone_number"] = item.xpath(phone_xpath).get(),
         contractor["bbb_rating"] = item.xpath(rating_xpath).get(),
         contractor["profile_page_url"] = item.xpath(profile_url_xpath).get()
