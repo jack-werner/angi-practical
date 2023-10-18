@@ -5,18 +5,7 @@ from typing import Any, Iterable
 import scrapy
 from scrapy.http import Request, Response
 
-class ContractorItem(scrapy.Item):
-    company_name = scrapy.Field()
-    phone_number = scrapy.Field()
-    street_address = scrapy.Field()
-    city_state = scrapy.Field()
-    zip_code = scrapy.Field()
-    company_website_url = scrapy.Field()
-    email_address = scrapy.Field()
-    bbb_rating = scrapy.Field()
-    accredited_date = scrapy.Field()
-    profile_page_url = scrapy.Field()
-
+from bbb_contractors.items import BbbContractorsItem
 
 class ContractorsSpider(scrapy.Spider):
 
@@ -35,7 +24,7 @@ class ContractorsSpider(scrapy.Spider):
         profile_url_xpath = ".//div/h3/a/@href"
 
 
-        contractor = ContractorItem()
+        contractor = BbbContractorsItem()
         contractor["company_name"] = item.xpath(name_xpath).get()
         contractor["street_address"] = item.xpath(street_address_xpath).get()
         contractor["city_state"] = item.xpath(city_state_xpath).get()
