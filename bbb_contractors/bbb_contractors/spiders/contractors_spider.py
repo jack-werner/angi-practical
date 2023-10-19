@@ -47,7 +47,9 @@ class ContractorsSpider(scrapy.Spider):
 
     def parse_contractor_profile(self, response: Response, item: BbbContractorsItem):
         website_xpath = "//*[text() = 'Visit Website']/@href"
-        accredited_date_xpath = '//*[@id="content"]/div[2]/div[2]/div[2]/div[2]/div/div[1]/div[2]/p[1]/text()'
+        accredited_date_xpath = (
+            "//*[text() = 'Accredited Since']/following-sibling::text()"
+        )
 
         item["company_website_url"] = response.xpath(website_xpath).get()
         item["accredited_date"] = response.xpath(accredited_date_xpath).get()
