@@ -16,7 +16,7 @@ After you have the requirements installed you can run the scraper by first
 navigating to the `bbb_contractors` directory using `cd bbb_contractors` run the command
 
 ```
-scrapy crawl roofing -o ../outputs/roofing_contractors.csv
+scrapy crawl roofing -O ../outputs/roofing_contractors.csv
 ```
 
 to output the results to a csv
