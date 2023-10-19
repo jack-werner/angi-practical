@@ -97,6 +97,7 @@ DOWNLOAD_DELAY = 1.5
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     "bbb_contractors.pipelines.FilterWaterproofPipeline": 300,
+    "bbb_contractors.pipelines.CleanDataInputsPipeline": 301,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

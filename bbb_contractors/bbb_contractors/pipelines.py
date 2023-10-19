@@ -8,6 +8,7 @@
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 from datetime import datetime
+import re
 
 
 class FilterWaterproofPipeline:
@@ -34,13 +35,22 @@ class CleanDataInputsPipeline:
 
         # clean dates
         def clean_date(date: str) -> str:
-            date = datetime.strptime(date, "%m/%d/%Y")
+            date = datetime.strptime(date.strip(), "%m/%d/%Y")
             return date.isoformat()
 
         date_fields = ["accredited_date", "business_start_date"]
         for field in date_fields:
-            item[field] = clean_date(item[field])
-
-        # impute complaints
+            if adapter.get(field):
+                item[field] = clean_date(adapter.get(field))
 
         # parse reviews
+        review_count_field = "customer_review_count"
+
+        def get_digits(s: str) -> str:
+            match = re.search(r"\d+", s)
+            return match.group()
+
+        if adapter.get(review_count_field):
+            item[review_count_field] = get_digits(adapter.get(review_count_field))
+
+        return item
