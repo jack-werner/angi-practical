@@ -46,13 +46,34 @@ class ContractorsSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse_contractor_profile(self, response: Response, item: BbbContractorsItem):
+        # required fields
         website_xpath = "//*[text() = 'Visit Website']/@href"
         accredited_date_xpath = (
             "//*[text() = 'Accredited Since']/following-sibling::text()"
         )
 
+        # additional fields
+        customer_rating_avg_xpath = "//span[contains(text(), '/5') ]/text()"
+        customer_review_count_xpath = "//p[contains(text(), 'Average of') ]/text()"
+        business_start_date_xpath = (
+            "//*[contains(text(), 'Business Started') ]/following-sibling::dd/text()"
+        )
+        complaints_l36m_xpath = "//p[contains(text(), 'last 3 years')]/strong/text()"
+        complaints_l12m_xpath = "//p[contains(text(), 'last 12 months')]/strong/text()"
+
         item["company_website_url"] = response.xpath(website_xpath).get()
         item["accredited_date"] = response.xpath(accredited_date_xpath).get()
+        item["customer_rating_avg_xpath"] = response.xpath(
+            customer_rating_avg_xpath
+        ).get()
+        item["customer_review_count_xpath"] = response.xpath(
+            customer_review_count_xpath
+        ).get()
+        item["business_start_date_xpath"] = response.xpath(
+            business_start_date_xpath
+        ).get()
+        item["complaints_l36m_xpath"] = response.xpath(complaints_l36m_xpath).get()
+        item["complaints_l12m_xpath"] = response.xpath(complaints_l12m_xpath).get()
 
         yield item
 
