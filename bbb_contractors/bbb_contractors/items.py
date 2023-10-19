@@ -7,6 +7,7 @@ import scrapy
 
 
 class BbbContractorsItem(scrapy.Item):
+    # required fields
     company_name = scrapy.Field()
     phone_number = scrapy.Field()
     street_address = scrapy.Field()
@@ -17,4 +18,11 @@ class BbbContractorsItem(scrapy.Item):
     bbb_rating = scrapy.Field()
     accredited_date = scrapy.Field()
     profile_page_url = scrapy.Field()
+
+    # additional fields
     company_types = scrapy.Field()
+    customer_rating_avg = scrapy.Field()
+    customer_review_count = scrapy.Field()
+    business_start_date = scrapy.Field()
+    complaints_l12m = scrapy.Field()
+    complaints_l36m = scrapy.Field()
