@@ -25,13 +25,21 @@ class ContractorsSpider(scrapy.Spider):
         contractor = BbbContractorsItem()
 
         contractor["company_name"] = item.xpath(name_xpath).get()
-        contractor["phone_number"] = (item.xpath(phone_xpath).get(),)
+        contractor["phone_number"] = item.xpath(phone_xpath).get()
         contractor["street_address"] = item.xpath(street_address_xpath).get()
-        contractor["city_state"] = item.xpath(city_state_xpath).get()
         contractor["zip_code"] = item.xpath(zip_code_xpath).get()
-        contractor["bbb_rating"] = (item.xpath(rating_xpath).get(),)
+        contractor["bbb_rating"] = item.xpath(rating_xpath).get()
         contractor["profile_page_url"] = item.xpath(profile_url_xpath).get()
         contractor["company_types"] = item.xpath(company_type_xpath).get()
+
+        city_state = item.xpath(city_state_xpath).get()
+        if city_state:
+            city_state_list = city_state.split(",")
+            city = city_state_list[0]
+            state = city_state_list[1]
+
+            contractor["city"] = city.strip()
+            contractor["state"] = state.strip()
 
         return contractor
 
