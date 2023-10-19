@@ -8,7 +8,7 @@ from bbb_contractors.items import BbbContractorsItem
 
 class ContractorsSpider(scrapy.Spider):
     name = "roofing"
-    follow = True
+    follow = False
 
     def get_contractor(self, item):
         """
@@ -46,7 +46,7 @@ class ContractorsSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse_contractor_profile(self, response: Response, item: BbbContractorsItem):
-        website_xpath = '//*[@id="content"]/div[2]/div[2]/div[1]/div/div[2]/a/@href'
+        website_xpath = "//*[text() = 'Visit Website']/@href"
         accredited_date_xpath = '//*[@id="content"]/div[2]/div[2]/div[2]/div[2]/div/div[1]/div[2]/p[1]/text()'
 
         item["company_website_url"] = response.xpath(website_xpath).get()
