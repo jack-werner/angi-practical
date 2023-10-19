@@ -8,7 +8,7 @@ from bbb_contractors.items import BbbContractorsItem
 
 class ContractorsSpider(scrapy.Spider):
     name = "roofing"
-    follow = False
+    follow = True
 
     def get_contractor(self, item):
         # required fields
@@ -35,11 +35,16 @@ class ContractorsSpider(scrapy.Spider):
         city_state = item.xpath(city_state_xpath).get()
         if city_state:
             city_state_list = city_state.split(",")
-            city = city_state_list[0]
-            state = city_state_list[1]
+            if len(city_state_list) == 2:
+                city = city_state_list[0]
+                state = city_state_list[1]
 
-            contractor["city"] = city.strip()
-            contractor["state"] = state.strip()
+                contractor["city"] = city.strip()
+                contractor["state"] = state.strip()
+            else:
+                self.logger.warn(
+                    f"City/State not processed correctly for value: {city_state}"
+                )
 
         return contractor
 
