@@ -38,10 +38,11 @@ class ContractorsSpider(scrapy.Spider):
         return contractor
 
     def start_requests(self) -> Iterable[Request]:
-        # roofing_url = "https://www.bbb.org/search?find_country=USA&find_entity=10126-000&find_id=1362_3100-14100&find_latlng=32.834605%2C-83.651801&find_loc=Macon%2C%20GA&find_text=Roofing%20Contractors&find_type=Category&page=1&sort=Distance"
-        waterproofing_url = "https://www.bbb.org/search?find_country=USA&find_text=waterproof&page=1&sort=Distance"
+        # waterproofing_url = "https://www.bbb.org/search?find_country=USA&find_text=waterproof&page=1&sort=Distance"
+        # urls = [waterproofing_url]
 
-        urls = [waterproofing_url]
+        roofing_url = "https://www.bbb.org/search?find_country=USA&find_entity=10126-000&find_id=1362_3100-14100&find_latlng=32.834605%2C-83.651801&find_loc=Macon%2C%20GA&find_text=Roofing%20Contractors&find_type=Category&page=1&sort=Distance"
+        urls = [roofing_url]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
 

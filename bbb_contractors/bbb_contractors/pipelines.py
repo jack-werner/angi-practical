@@ -7,20 +7,21 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
-import logging
 
 
 class FilterWaterproofPipeline:
-    filter_terms = ["waterproof", "waterproofing"]
-    filter_field = "company_types"
-
     def process_item(self, item, spider):
+        filter_terms = ["waterproof", "waterproofing"]
+        filter_field = "company_types"
+
         adapter = ItemAdapter(item)
-        field = adapter.get(self.filter_field)
+        field = adapter.get(filter_field)
         if field:
-            if any([term in field.lower() for term in self.filter_terms]):
+            if any([term in field.lower() for term in filter_terms]):
                 raise DropItem(
-                    f"Company type is not valid, contains '{', '.join(self.filter_terms)}'"
+                    f"Company type is not valid, contains '{', '.join(filter_terms)}'"
                 )
+            else:
+                item[filter_field] = field.replace(",", "|")
 
         return item
