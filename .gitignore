@@ -4,3 +4,4 @@ web_drivers
 **/__init__.py
 __pycache__/
 card.html
+outputs
