@@ -7,6 +7,7 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
+from datetime import datetime
 
 
 class FilterWaterproofPipeline:
@@ -25,3 +26,21 @@ class FilterWaterproofPipeline:
                 item[filter_field] = field.replace(",", "|")
 
         return item
+
+
+class CleanDataInputsPipeline:
+    def process_item(self, item, spider):
+        adapter = ItemAdapter(item)
+
+        # clean dates
+        def clean_date(date: str) -> str:
+            date = datetime.strptime(date, "%m/%d/%Y")
+            return date.isoformat()
+
+        date_fields = ["accredited_date", "business_start_date"]
+        for field in date_fields:
+            item[field] = clean_date(item[field])
+
+        # impute complaints
+
+        # parse reviews
