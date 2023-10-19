@@ -11,9 +11,7 @@ class ContractorsSpider(scrapy.Spider):
     follow = False
 
     def get_contractor(self, item):
-        """
-        (Any other information you think is good to have/relevant)
-        """
+        # required fields
         name_xpath = ".//div/h3/a/span/text()"
         phone_xpath = './/a[contains(@href, "tel:")]/text()'
         street_address_xpath = ".//div[2]/div/div/p[2]/text()"
@@ -21,11 +19,11 @@ class ContractorsSpider(scrapy.Spider):
         zip_code_xpath = ".//div[2]/div/div/p[2]/span[2]/text()"
         rating_xpath = ".//div/div/span/text()[3]"
         profile_url_xpath = ".//div/h3/a/@href"
-
+        # additional fields
         company_type_xpath = '//*[@id="content"]/div/div[3]/div/div[1]/div[2]/div[12]/div/div[1]/div[1]/p/text()'
 
         contractor = BbbContractorsItem()
-        # required fields
+
         contractor["company_name"] = item.xpath(name_xpath).get()
         contractor["phone_number"] = (item.xpath(phone_xpath).get(),)
         contractor["street_address"] = item.xpath(street_address_xpath).get()
@@ -33,8 +31,6 @@ class ContractorsSpider(scrapy.Spider):
         contractor["zip_code"] = item.xpath(zip_code_xpath).get()
         contractor["bbb_rating"] = (item.xpath(rating_xpath).get(),)
         contractor["profile_page_url"] = item.xpath(profile_url_xpath).get()
-
-        # additional fields
         contractor["company_types"] = item.xpath(company_type_xpath).get()
 
         return contractor
@@ -46,13 +42,30 @@ class ContractorsSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse_contractor_profile(self, response: Response, item: BbbContractorsItem):
+        # required fields
         website_xpath = "//*[text() = 'Visit Website']/@href"
         accredited_date_xpath = (
             "//*[text() = 'Accredited Since']/following-sibling::text()"
         )
 
+        # additional fields
+        customer_rating_avg_xpath = "//span[contains(text(), '/5') ]/text()"
+        customer_review_count_xpath = "//p[contains(text(), 'Average of') ]/text()"
+        business_start_date_xpath = (
+            "//*[contains(text(), 'Business Started') ]/following-sibling::dd/text()"
+        )
+        complaints_l36m_xpath = "//p[contains(text(), 'last 3 years')]/strong/text()"
+        complaints_l12m_xpath = "//p[contains(text(), 'last 12 months')]/strong/text()"
+
         item["company_website_url"] = response.xpath(website_xpath).get()
         item["accredited_date"] = response.xpath(accredited_date_xpath).get()
+        item["customer_rating_avg"] = response.xpath(customer_rating_avg_xpath).get()
+        item["customer_review_count"] = response.xpath(
+            customer_review_count_xpath
+        ).get()
+        item["business_start_date"] = response.xpath(business_start_date_xpath).get()
+        item["complaints_l36m"] = response.xpath(complaints_l36m_xpath).get()
+        item["complaints_l12m"] = response.xpath(complaints_l12m_xpath).get()
 
         yield item
 
