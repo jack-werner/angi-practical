@@ -40,17 +40,32 @@ class CleanDataInputsPipeline:
 
         date_fields = ["accredited_date", "business_start_date"]
         for field in date_fields:
-            if adapter.get(field):
-                item[field] = clean_date(adapter.get(field))
+            value = adapter.get(field)
+            if value:
+                item[field] = clean_date(value)
 
         # parse reviews
-        review_count_field = "customer_review_count"
-
         def get_digits(s: str) -> str:
             match = re.search(r"\d+", s)
             return match.group()
 
-        if adapter.get(review_count_field):
-            item[review_count_field] = get_digits(adapter.get(review_count_field))
+        review_count_field = "customer_review_count"
+        review_count = adapter.get(review_count_field)
+
+        if review_count:
+            item[review_count_field] = get_digits(review_count)
+
+        # parse rating
+        rating_field = "customer_rating_avg"
+        rating = adapter.get(rating_field)
+        if rating:
+            item[rating_field] = float(rating.replace("/5", ""))
+
+        # impute complaints
+        complaint_fields = ["complaints_l12m", "complaints_l36m"]
+        for field in complaint_fields:
+            value = adapter.get(field)
+            if not value:
+                item[field] = 0
 
         return item
