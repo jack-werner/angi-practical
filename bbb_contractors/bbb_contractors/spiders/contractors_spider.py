@@ -43,9 +43,7 @@ class ContractorsSpider(scrapy.Spider):
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
-    def parse_contractor_profile(self, response: Response):
-        item = response.meta['item']
-
+    def parse_contractor_profile(self, response: Response, item: BbbContractorsItem):
         website_xpath = '//*[@id="content"]/div[2]/div[2]/div[1]/div/div[2]/a/@href'
         accredited_date_xpath = '//*[@id="content"]/div[2]/div[2]/div[2]/div[2]/div/div[1]/div[2]/p[1]/text()'
 
@@ -65,8 +63,11 @@ class ContractorsSpider(scrapy.Spider):
         for item in search_results:
             contractor = self.get_contractor(item)
             if contractor['profile_page_url']:
-                request = scrapy.Request(contractor['profile_page_url'], callback=self.parse_contractor_profile)
-                request.meta['item'] = contractor
+                request = scrapy.Request(
+                    contractor['profile_page_url'], 
+                    callback=self.parse_contractor_profile, 
+                    cb_kwargs=dict(item=contractor)
+                )
                 yield request
     
     
