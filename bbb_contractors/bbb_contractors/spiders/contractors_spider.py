@@ -8,7 +8,7 @@ from bbb_contractors.items import BbbContractorsItem
 
 class ContractorsSpider(scrapy.Spider):
     name = "roofing"
-    follow = False
+    follow = True
 
     def get_contractor(self, item):
         """
@@ -25,6 +25,7 @@ class ContractorsSpider(scrapy.Spider):
         company_type_xpath = '//*[@id="content"]/div/div[3]/div/div[1]/div[2]/div[12]/div/div[1]/div[1]/p/text()'
 
         contractor = BbbContractorsItem()
+        # required fields
         contractor["company_name"] = item.xpath(name_xpath).get()
         contractor["phone_number"] = (item.xpath(phone_xpath).get(),)
         contractor["street_address"] = item.xpath(street_address_xpath).get()
@@ -33,14 +34,12 @@ class ContractorsSpider(scrapy.Spider):
         contractor["bbb_rating"] = (item.xpath(rating_xpath).get(),)
         contractor["profile_page_url"] = item.xpath(profile_url_xpath).get()
 
+        # additional fields
         contractor["company_types"] = item.xpath(company_type_xpath).get()
 
         return contractor
 
     def start_requests(self) -> Iterable[Request]:
-        # waterproofing_url = "https://www.bbb.org/search?find_country=USA&find_text=waterproof&page=1&sort=Distance"
-        # urls = [waterproofing_url]
-
         roofing_url = "https://www.bbb.org/search?find_country=USA&find_entity=10126-000&find_id=1362_3100-14100&find_latlng=32.834605%2C-83.651801&find_loc=Macon%2C%20GA&find_text=Roofing%20Contractors&find_type=Category&page=1&sort=Distance"
         urls = [roofing_url]
         for url in urls:
