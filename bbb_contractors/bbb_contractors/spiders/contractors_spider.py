@@ -11,9 +11,7 @@ class ContractorsSpider(scrapy.Spider):
     follow = False
 
     def get_contractor(self, item):
-        """
-        (Any other information you think is good to have/relevant)
-        """
+        # required fields
         name_xpath = ".//div/h3/a/span/text()"
         phone_xpath = './/a[contains(@href, "tel:")]/text()'
         street_address_xpath = ".//div[2]/div/div/p[2]/text()"
@@ -21,11 +19,11 @@ class ContractorsSpider(scrapy.Spider):
         zip_code_xpath = ".//div[2]/div/div/p[2]/span[2]/text()"
         rating_xpath = ".//div/div/span/text()[3]"
         profile_url_xpath = ".//div/h3/a/@href"
-
+        # additional fields
         company_type_xpath = '//*[@id="content"]/div/div[3]/div/div[1]/div[2]/div[12]/div/div[1]/div[1]/p/text()'
 
         contractor = BbbContractorsItem()
-        # required fields
+
         contractor["company_name"] = item.xpath(name_xpath).get()
         contractor["phone_number"] = (item.xpath(phone_xpath).get(),)
         contractor["street_address"] = item.xpath(street_address_xpath).get()
@@ -33,8 +31,6 @@ class ContractorsSpider(scrapy.Spider):
         contractor["zip_code"] = item.xpath(zip_code_xpath).get()
         contractor["bbb_rating"] = (item.xpath(rating_xpath).get(),)
         contractor["profile_page_url"] = item.xpath(profile_url_xpath).get()
-
-        # additional fields
         contractor["company_types"] = item.xpath(company_type_xpath).get()
 
         return contractor
