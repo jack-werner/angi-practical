@@ -19,5 +19,5 @@ navigating to the `bbb_contractors` directory using `cd bbb_contractors` run the
 scrapy crawl roofing -O ../outputs/roofing_contractors.csv
 ```
 
-to output the results to a csv
+to output the results to a csv. (use -o if you want to append instead of overwrite)
 
