@@ -17,4 +17,3 @@ class BbbContractorsItem(scrapy.Item):
     bbb_rating = scrapy.Field()
     accredited_date = scrapy.Field()
     profile_page_url = scrapy.Field()
-    url = scrapy.Field()

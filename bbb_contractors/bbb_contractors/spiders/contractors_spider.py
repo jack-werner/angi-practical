@@ -69,6 +69,12 @@ class ContractorsSpider(scrapy.Spider):
                     cb_kwargs=dict(item=contractor)
                 )
                 yield request
+        
+        next_url_xpath = '//a[@rel="next"]/@href'
+        next_url = response.xpath(next_url_xpath).get()
+        if next_url:
+            yield response.follow(next_url, callback=self.parse)
+
     
     
     
