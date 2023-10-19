@@ -63,17 +63,13 @@ class ContractorsSpider(scrapy.Spider):
 
         item["company_website_url"] = response.xpath(website_xpath).get()
         item["accredited_date"] = response.xpath(accredited_date_xpath).get()
-        item["customer_rating_avg_xpath"] = response.xpath(
-            customer_rating_avg_xpath
-        ).get()
-        item["customer_review_count_xpath"] = response.xpath(
+        item["customer_rating_avg"] = response.xpath(customer_rating_avg_xpath).get()
+        item["customer_review_count"] = response.xpath(
             customer_review_count_xpath
         ).get()
-        item["business_start_date_xpath"] = response.xpath(
-            business_start_date_xpath
-        ).get()
-        item["complaints_l36m_xpath"] = response.xpath(complaints_l36m_xpath).get()
-        item["complaints_l12m_xpath"] = response.xpath(complaints_l12m_xpath).get()
+        item["business_start_date"] = response.xpath(business_start_date_xpath).get()
+        item["complaints_l36m"] = response.xpath(complaints_l36m_xpath).get()
+        item["complaints_l12m"] = response.xpath(complaints_l12m_xpath).get()
 
         yield item
 
