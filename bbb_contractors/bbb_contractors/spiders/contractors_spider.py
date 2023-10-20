@@ -8,15 +8,12 @@ from bbb_contractors.items import BbbContractorsItem
 
 class ContractorsSpider(scrapy.Spider):
     name = "roofing"
-    follow = False
+    follow = True
 
     def get_contractor(self, item):
         # required fields
         name_xpath = ".//div/h3/a/span/text()"
         phone_xpath = './/a[contains(@href, "tel:")]/text()'
-        street_address_xpath = ".//div[2]/div/div/p[2]/text()"
-        city_state_xpath = ".//div[2]/div/div/p[2]/text()[2]"
-        zip_code_xpath = ".//div[2]/div/div/p[2]/span[2]/text()"
         rating_xpath = ".//div/div/span/text()[3]"
         profile_url_xpath = ".//div/h3/a/@href"
         # additional fields
@@ -24,22 +21,12 @@ class ContractorsSpider(scrapy.Spider):
 
         contractor = BbbContractorsItem()
 
+        # get data
         contractor["company_name"] = item.xpath(name_xpath).get()
         contractor["phone_number"] = item.xpath(phone_xpath).get()
-        contractor["street_address"] = item.xpath(street_address_xpath).get()
-        contractor["zip_code"] = item.xpath(zip_code_xpath).get()
         contractor["bbb_rating"] = item.xpath(rating_xpath).get()
         contractor["profile_page_url"] = item.xpath(profile_url_xpath).get()
         contractor["company_types"] = item.xpath(company_type_xpath).get()
-
-        city_state = item.xpath(city_state_xpath).get()
-        if city_state:
-            city_state_list = city_state.split(",")
-            city = city_state_list[0]
-            state = city_state_list[1]
-
-            contractor["city"] = city.strip()
-            contractor["state"] = state.strip()
 
         return contractor
 
@@ -55,6 +42,7 @@ class ContractorsSpider(scrapy.Spider):
         accredited_date_xpath = (
             "//*[text() = 'Accredited Since']/following-sibling::text()"
         )
+        full_address_xpath = "//address[1]"
 
         # additional fields
         customer_rating_avg_xpath = "//span[contains(text(), '/5') ]/text()"
@@ -64,6 +52,13 @@ class ContractorsSpider(scrapy.Spider):
         )
         complaints_l36m_xpath = "//p[contains(text(), 'last 3 years')]/strong/text()"
         complaints_l12m_xpath = "//p[contains(text(), 'last 12 months')]/strong/text()"
+
+        # get data
+        address_element = response.xpath(full_address_xpath)
+        address_text = " ".join(address_element.xpath(".//p/text()").extract())
+        # split on space and rejoin to get rid of multiple spaces in a row
+        address_text_clean = " ".join(address_text.split())
+        item["full_address"] = address_text_clean
 
         item["company_website_url"] = response.xpath(website_xpath).get()
         item["accredited_date"] = response.xpath(accredited_date_xpath).get()
