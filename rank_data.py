@@ -73,7 +73,7 @@ def get_score(df: pd.DataFrame):
 
 
 if __name__ == "__main__":
-    df = get_score(df=pd.read_csv("outputs_copy/rankings.csv"))
+    df = get_score(df=pd.read_csv("outputs/roofing.csv"))
     df = df.sort_values(by="score", ascending=False)
 
     df.to_csv("outputs/rankings.csv", index=False)
