@@ -69,38 +69,3 @@ class CleanDataInputsPipeline:
                 item[field] = 0
 
         return item
-
-    class CalculateRankPipeline:
-        def numeric_ranking(self, rank):
-            grade_values = {
-                "A+": 12,
-                "A": 11,
-                "A-": 10,
-                "B+": 9,
-                "B": 8,
-                "B-": 7,
-                "C+": 6,
-                "C": 5,
-                "C-": 4,
-                "D+": 3,
-                "D": 2,
-                "D-": 1,
-                "F": 0,
-                "NR": -1,
-            }
-
-            return grade_values[rank]
-
-        def process_item(self, item, spider):
-            adapter = ItemAdapter(item)
-
-            # days_accredited + bbb_rating + customer_rating_avg + days_in_operation - complaints_l12m - complaints_l36m
-            accredited_date = adapter.get("accredited_date")
-            today = datetime.now()
-
-            days_accredited = (today - accredited_date).days
-            bbb_rating = self.numeric_ranking(adapter.get("bbb_rating"))
-            customer_rating_avg = adapter.get("customer_rating_avg")
-            days_in_operation = (today - adapter.get("business_start_date")).days
-            complaints_l12m = adapter.get("complaints_l12m")
-            complaints_l36m = adapter.get("complaints_l36m")
