@@ -5,3 +5,4 @@ web_drivers
 __pycache__/
 card.html
 outputs
+outputs_copy
