@@ -58,9 +58,9 @@ def get_score(df: pd.DataFrame):
 
     # get numerical data
     numerical_cols = [
-        "days_accredited",
         "numeric_bbb",
         "customer_rating_avg",
+        "days_accredited",
         "days_in_operation",
         "complaints_l12m",
         "complaints_l36m",
