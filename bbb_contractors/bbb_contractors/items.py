@@ -10,10 +10,6 @@ class BbbContractorsItem(scrapy.Item):
     # required fields
     company_name = scrapy.Field()
     phone_number = scrapy.Field()
-    street_address = scrapy.Field()
-    city = scrapy.Field()
-    state = scrapy.Field()
-    zip_code = scrapy.Field()
     company_website_url = scrapy.Field()
     email_address = scrapy.Field()
     bbb_rating = scrapy.Field()
