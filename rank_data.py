@@ -1,3 +1,4 @@
+import argparse
 import pandas as pd
 from datetime import datetime
 
@@ -72,8 +73,19 @@ def get_score(df: pd.DataFrame):
     return df
 
 
-if __name__ == "__main__":
-    df = get_score(df=pd.read_csv("outputs/roofing.csv"))
+def main():
+    # parse args
+    parser = argparse.ArgumentParser(description="Read file with data to be scored")
+    parser.add_argument("-i", "--input", help="Path of the file to read")
+    parser.add_argument("-o", "--output", help="Path of output file")
+
+    args = parser.parse_args()
+
+    df = get_score(df=pd.read_csv(args.input))
     df = df.sort_values(by="score", ascending=False)
 
-    df.to_csv("outputs/rankings.csv", index=False)
+    df.to_csv(args.output, index=False)
+
+
+if __name__ == "__main__":
+    main()
