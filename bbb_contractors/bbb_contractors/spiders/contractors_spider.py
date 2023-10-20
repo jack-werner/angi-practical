@@ -8,7 +8,7 @@ from bbb_contractors.items import BbbContractorsItem
 
 class ContractorsSpider(scrapy.Spider):
     name = "roofing"
-    follow = False
+    follow = True
 
     def get_contractor(self, item):
         # required fields
@@ -34,12 +34,17 @@ class ContractorsSpider(scrapy.Spider):
 
         city_state = item.xpath(city_state_xpath).get()
         if city_state:
-            city_state_list = city_state.split(",")
-            city = city_state_list[0]
-            state = city_state_list[1]
+            city_state_list = city_state.strip().split(",")
+            if len(city_state_list) == 2:
+                city = city_state_list[0]
+                state = city_state_list[1]
 
-            contractor["city"] = city.strip()
-            contractor["state"] = state.strip()
+                contractor["city"] = city.strip()
+                contractor["state"] = state.strip()
+            else:
+                self.logger.warn(
+                    f"""City/State not processed correctly for value: '{city_state}'"""
+                )
 
         return contractor
 
@@ -55,6 +60,7 @@ class ContractorsSpider(scrapy.Spider):
         accredited_date_xpath = (
             "//*[text() = 'Accredited Since']/following-sibling::text()"
         )
+        full_address_xpath = "//address[1]"
 
         # additional fields
         customer_rating_avg_xpath = "//span[contains(text(), '/5') ]/text()"
@@ -64,6 +70,12 @@ class ContractorsSpider(scrapy.Spider):
         )
         complaints_l36m_xpath = "//p[contains(text(), 'last 3 years')]/strong/text()"
         complaints_l12m_xpath = "//p[contains(text(), 'last 12 months')]/strong/text()"
+
+        address_element = response.xpath(full_address_xpath)
+        address_text = " ".join(address_element.xpath(".//p/text()").extract())
+        # split on space and rejoin to get rid of multiple spaces in a row
+        address_text_clean = " ".join(address_text.split())
+        item["full_address"] = address_text_clean
 
         item["company_website_url"] = response.xpath(website_xpath).get()
         item["accredited_date"] = response.xpath(accredited_date_xpath).get()
