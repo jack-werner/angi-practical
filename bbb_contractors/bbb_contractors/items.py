@@ -27,3 +27,5 @@ class BbbContractorsItem(scrapy.Item):
     business_start_date = scrapy.Field()
     complaints_l12m = scrapy.Field()
     complaints_l36m = scrapy.Field()
+
+    full_address = scrapy.Field()

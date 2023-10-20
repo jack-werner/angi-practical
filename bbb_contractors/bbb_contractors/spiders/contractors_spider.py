@@ -34,7 +34,7 @@ class ContractorsSpider(scrapy.Spider):
 
         city_state = item.xpath(city_state_xpath).get()
         if city_state:
-            city_state_list = city_state.split(",")
+            city_state_list = city_state.strip().split(",")
             if len(city_state_list) == 2:
                 city = city_state_list[0]
                 state = city_state_list[1]
@@ -43,7 +43,33 @@ class ContractorsSpider(scrapy.Spider):
                 contractor["state"] = state.strip()
             else:
                 self.logger.warn(
-                    f"City/State not processed correctly for value: {city_state}"
+                    f"""City/State not processed correctly for value: '{city_state}'
+                    *
+                    *
+                    *
+                    *
+                    *
+                    *
+                    *
+                    *
+                    *
+                    *
+                    *
+                    *
+                    *
+
+                    *
+                    v
+                    v
+                    *
+                    v
+                    *
+                    *
+                    *
+                    *
+                    *
+                    *
+                    """
                 )
 
         return contractor
@@ -69,6 +95,26 @@ class ContractorsSpider(scrapy.Spider):
         )
         complaints_l36m_xpath = "//p[contains(text(), 'last 3 years')]/strong/text()"
         complaints_l12m_xpath = "//p[contains(text(), 'last 12 months')]/strong/text()"
+
+        full_address_xpath = "//address[1]"
+        address_element = response.xpath(full_address_xpath)
+
+        # def parse_address(address):
+        #     text = []
+        #     for p in address:
+        #         p_siblings = p.xpath("following-sibling::*")
+        #         s = [p.xpath("text()").get() for p in p_siblings]
+        #         text.append("".join(s))
+        #     return "".join(text)
+        address_text = " ".join(address_element.xpath(".//p/text()").extract())
+        # address_text = " ".join([p.strip() for p in address_pieces])
+        address_text_clean = " ".join(address_text.split())
+
+        # item["full_address"] = " ".join(
+        #     [p.xpath("text()").get() for p in address_p_children]
+        # )
+        # item["full_address"] = parse_address(response.xpath(full_address_xpath))
+        item["full_address"] = address_text_clean
 
         item["company_website_url"] = response.xpath(website_xpath).get()
         item["accredited_date"] = response.xpath(accredited_date_xpath).get()
